@@ -51,7 +51,7 @@ while (<>) {
 	{
 	    $url_stats{"$host$url"} =
 	    {
-		count => 0,
+		hits => 0,
 		cpu   => 0,
 	    }
 	}
@@ -60,15 +60,15 @@ while (<>) {
 	{
 	    $site_stats{$host} =
 	    {
-		count => 0,
+		hits => 0,
 		cpu   => 0,
 	    }
 	}
 
-	$url_stats{"$host$url"}{count}++;
+	$url_stats{"$host$url"}{hits}++;
 	$url_stats{"$host$url"}{cpu} += $total_cpu;
 
-	$site_stats{$host}{count}++;
+	$site_stats{$host}{hits}++;
 	$site_stats{$host}{cpu} += $total_cpu;
 
 	# print "usr $usr_cpu sys $sys_cpu host $host total_cpu=$total_cpu url=$url\n";
@@ -76,15 +76,15 @@ while (<>) {
 }
 
 print "==== URL STATS\n";
-print "cpu, count, url\n";
+print "cpu, hits, url\n";
 foreach my $key (keys %url_stats)
 {
-    print "$url_stats{$key}{cpu}, $url_stats{$key}{count}, $key\n";
+    print "$url_stats{$key}{cpu}, $url_stats{$key}{hits}, $key\n";
 }
 
 print "==== SITES STATS\n";
-print "cpu, count, site\n";
+print "cpu, hits, site\n";
 foreach my $key (keys %site_stats)
 {
-    print "$site_stats{$key}{cpu}, $site_stats{$key}{count}, $key\n";
+    print "$site_stats{$key}{cpu}, $site_stats{$key}{hits}, $key\n";
 }
