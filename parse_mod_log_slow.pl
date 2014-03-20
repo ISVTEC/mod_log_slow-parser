@@ -52,7 +52,7 @@ while (<>) {
 	    $url_stats{"$host$url"} =
 	    {
 		hits => 0,
-		cpu   => 0,
+		cpu  => 0,
 	    }
 	}
 
@@ -61,7 +61,7 @@ while (<>) {
 	    $site_stats{$host} =
 	    {
 		hits => 0,
-		cpu   => 0,
+		cpu  => 0,
 	    }
 	}
 
