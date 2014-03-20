@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 #
-# Copyright (C) 2012 Cyril Bouthors <cyril@bouthors.org>
+# Copyright (C) 2012-2014 Cyril Bouthors <cyril@boutho.rs>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -23,6 +23,7 @@ use strict   qw(subs vars refs);
 use subs     qw(afunc blurfl);
 use warnings qw(all);
 use sort     qw(stable _quicksort _mergesort);
+use Text::CSV;
 
 my ($usr_cpu, $sys_cpu, $host, $url);
 my (%url_stats, %site_stats);
@@ -75,16 +76,59 @@ while (<>) {
     }
 }
 
-print "==== URL STATS\n";
-print "cpu, hits, url\n";
+my $csv = Text::CSV->new({eol => "\r\n"})
+    or die "Cannot use CSV: ".Text::CSV->error_diag();
+
+open(FILE, '>', 'cpu-by-url.csv')
+    or die "cpu-by-url.csv: $!";
+
+# Print headers
+$csv->combine(
+    (
+     'cpu',
+     'hits',
+     'url'
+    ));
+print FILE $csv->string();
+
+# Print data
 foreach my $key (keys %url_stats)
 {
-    print "$url_stats{$key}{cpu}, $url_stats{$key}{hits}, $key\n";
+    $csv->combine(
+	(
+	 $url_stats{$key}{cpu},
+	 $url_stats{$key}{hits},
+	 $key,
+	));
+    print FILE $csv->string();
 }
 
-print "==== SITES STATS\n";
-print "cpu, hits, site\n";
+close FILE
+    or die "cpu-by-url.csv: $!";
+
+open(FILE, '>', 'cpu-by-site.csv')
+    or die "cpu-by-site.csv: $!";
+
+
+# Print headers
+$csv->combine(
+    (
+     'cpu',
+     'hits',
+     'url'
+    ));
+print FILE $csv->string();
+
 foreach my $key (keys %site_stats)
 {
-    print "$site_stats{$key}{cpu}, $site_stats{$key}{hits}, $key\n";
+    $csv->combine(
+	(
+	 $site_stats{$key}{cpu},
+	 $site_stats{$key}{hits},
+	 $key,
+	));
+    print FILE $csv->string();
 }
+
+close FILE
+    or die "cpu-by-site.csv: $!";
