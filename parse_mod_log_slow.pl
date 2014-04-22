@@ -67,10 +67,10 @@ while (<>) {
 	}
 
 	$url_stats{"$host$url"}{hits}++;
-	$url_stats{"$host$url"}{cpu} += $total_cpu;
+	$url_stats{"$host$url"}{total_cpu} += $total_cpu;
 
 	$site_stats{$host}{hits}++;
-	$site_stats{$host}{cpu} += $total_cpu;
+	$site_stats{$host}{total_cpu} += $total_cpu;
 
 	# print "usr $usr_cpu sys $sys_cpu host $host total_cpu=$total_cpu url=$url\n";
     }
@@ -85,7 +85,7 @@ open(FILE, '>', 'cpu-by-url.csv')
 # Print headers
 $csv->combine(
     (
-     'cpu',
+     'total_cpu',
      'hits',
      'url'
     ));
@@ -96,7 +96,7 @@ foreach my $key (keys %url_stats)
 {
     $csv->combine(
 	(
-	 $url_stats{$key}{cpu},
+	 $url_stats{$key}{total_cpu},
 	 $url_stats{$key}{hits},
 	 $key,
 	));
@@ -123,7 +123,7 @@ foreach my $key (keys %site_stats)
 {
     $csv->combine(
 	(
-	 $site_stats{$key}{cpu},
+	 $site_stats{$key}{total_cpu},
 	 $site_stats{$key}{hits},
 	 $key,
 	));
