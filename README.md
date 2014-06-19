@@ -4,7 +4,9 @@ Parses the output of Apache mod_log_slow and produce statistics in CSV format.
 
 # Installation
 
-See the ``INSTALL'' file.
+```
+sudo apt-get install libtext-csv-perl
+```
 
 # Usage
 
