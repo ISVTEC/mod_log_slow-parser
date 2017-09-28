@@ -32,7 +32,7 @@ my $blacklist = '\.(jpg|png|css|js|ico)$';
 
 while (<>) {
 
-  # Example: 
+  # Example:
   # 289c:50d1cb67:1 [19/Dec/2012:15:12:55 +0100] elapsed: 0.01 cpu: 0.00(usr)/0.00(sys) pid: 10396 ip: 1.2.4.5 host: mysite.com:80 reqinfo: GET /index.php?foo=bar HTTP/1.1
 
     if(/^.*cpu: (.*)\(usr\)\/(.*)\(sys\).*host: (.*):.* reqinfo: (GET|POST|HEAD) (.*) HTTP.*$/)
