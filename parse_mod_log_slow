@@ -90,7 +90,7 @@ $csv->combine(('URL',
 print FILE $csv->string();
 
 # Print data
-foreach my $key (keys %url_stats)
+foreach my $key (sort { $url_stats{$b}{total_cpu} <=> $url_stats{$a}{total_cpu} } keys %url_stats)
 {
 	$csv->combine((
                  $key,
@@ -116,7 +116,7 @@ $csv->combine((
                ));
 print FILE $csv->string();
 
-foreach my $key (keys %site_stats)
+foreach my $key (sort { $site_stats{$b}{total_cpu} <=> $site_stats{$a}{total_cpu} } keys %site_stats)
 {
 	$csv->combine((
                  $key,
