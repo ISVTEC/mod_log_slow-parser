@@ -84,8 +84,8 @@ open(FILE, '>', 'cpu-by-url.csv')
 # Print headers
 $csv->combine(('URL',
                'Hits',
-               'Total CPU Time (s)',
-               'CPU Time per Hit (s/hit)'
+               'Total CPU Time (sec)',
+               'CPU Time per Hit (sec/hit)'
                ));
 print FILE $csv->string();
 
@@ -111,8 +111,8 @@ open(FILE, '>', 'cpu-by-site.csv')
 $csv->combine((
                'URL',
                'Hits',
-               'Total CPU Time (s)',
-               'CPU Time per Hit (s/hit)'
+               'Total CPU Time (sec)',
+               'CPU Time per Hit (sec/hit)'
                ));
 print FILE $csv->string();
 
