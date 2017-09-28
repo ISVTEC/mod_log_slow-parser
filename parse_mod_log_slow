@@ -72,8 +72,6 @@ while (<>)
 
 		$site_stats{$host}{hits}++;
 		$site_stats{$host}{total_cpu} += $total_cpu;
-
-	# print "usr $usr_cpu sys $sys_cpu host $host total_cpu=$total_cpu url=$url\n";
   }
 }
 
