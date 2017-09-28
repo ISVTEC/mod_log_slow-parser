@@ -30,57 +30,58 @@ my (%url_stats, %site_stats);
 
 my $blacklist = '\.(jpg|png|css|js|ico)$';
 
-while (<>) {
+while (<>)
+{
 
-  # Example:
-  # 289c:50d1cb67:1 [19/Dec/2012:15:12:55 +0100] elapsed: 0.01 cpu: 0.00(usr)/0.00(sys) pid: 10396 ip: 1.2.4.5 host: mysite.com:80 reqinfo: GET /index.php?foo=bar HTTP/1.1
+	# Example:
+	# 289c:50d1cb67:1 [19/Dec/2012:15:12:55 +0100] elapsed: 0.01 cpu: 0.00(usr)/0.00(sys) pid: 10396 ip: 1.2.4.5 host: mysite.com:80 reqinfo: GET /index.php?foo=bar HTTP/1.1
 
-    if(/^.*cpu: (.*)\(usr\)\/(.*)\(sys\).*host: (.*):.* reqinfo: (GET|POST|HEAD) (.*) HTTP.*$/)
-    {
-	$usr_cpu = $1;
-	$sys_cpu = $2;
-
-	$host = $3;
-	$url = $5;
-
-	next if($url =~ /$blacklist/);
-
-	my $total_cpu = $usr_cpu + $sys_cpu;
-	next if ($total_cpu == 0);
-
-	if(!exists($url_stats{"$host$url"}))
+	if(/^.*cpu: (.*)\(usr\)\/(.*)\(sys\).*host: (.*):.* reqinfo: (GET|POST|HEAD) (.*) HTTP.*$/)
 	{
-	    $url_stats{"$host$url"} =
-	    {
-		hits => 0,
-		cpu  => 0,
-	    }
-	}
+		$usr_cpu = $1;
+		$sys_cpu = $2;
 
-	if(!exists($site_stats{$host}))
-	{
-	    $site_stats{$host} =
-	    {
-		hits => 0,
-		cpu  => 0,
-	    }
-	}
+		$host = $3;
+		$url = $5;
 
-	$url_stats{"$host$url"}{hits}++;
-	$url_stats{"$host$url"}{total_cpu} += $total_cpu;
+		next if($url =~ /$blacklist/);
 
-	$site_stats{$host}{hits}++;
-	$site_stats{$host}{total_cpu} += $total_cpu;
+		my $total_cpu = $usr_cpu + $sys_cpu;
+		next if ($total_cpu == 0);
+
+		if(!exists($url_stats{"$host$url"}))
+		{
+			$url_stats{"$host$url"} =
+			{
+				hits => 0,
+				cpu  => 0,
+			}
+		}
+
+		if(!exists($site_stats{$host}))
+		{
+			$site_stats{$host} =
+			{
+				hits => 0,
+				cpu  => 0,
+			}
+		}
+
+		$url_stats{"$host$url"}{hits}++;
+		$url_stats{"$host$url"}{total_cpu} += $total_cpu;
+
+		$site_stats{$host}{hits}++;
+		$site_stats{$host}{total_cpu} += $total_cpu;
 
 	# print "usr $usr_cpu sys $sys_cpu host $host total_cpu=$total_cpu url=$url\n";
-    }
+  }
 }
 
 my $csv = Text::CSV->new({eol => "\r\n"})
-    or die "Cannot use CSV: ".Text::CSV->error_diag();
+  or die "Cannot use CSV: ".Text::CSV->error_diag();
 
 open(FILE, '>', 'cpu-by-url.csv')
-    or die "cpu-by-url.csv: $!";
+  or die "cpu-by-url.csv: $!";
 
 # Print headers
 $csv->combine(
@@ -94,20 +95,20 @@ print FILE $csv->string();
 # Print data
 foreach my $key (keys %url_stats)
 {
-    $csv->combine(
-	(
-	 $key,
-	 $url_stats{$key}{total_cpu},
-	 $url_stats{$key}{hits},
-	));
-    print FILE $csv->string();
+	$csv->combine(
+	              (
+	               $key,
+	               $url_stats{$key}{total_cpu},
+	               $url_stats{$key}{hits},
+	               ));
+	print FILE $csv->string();
 }
 
 close FILE
-    or die "cpu-by-url.csv: $!";
+	or die "cpu-by-url.csv: $!";
 
 open(FILE, '>', 'cpu-by-site.csv')
-    or die "cpu-by-site.csv: $!";
+	or die "cpu-by-site.csv: $!";
 
 
 # Print headers
@@ -121,14 +122,14 @@ print FILE $csv->string();
 
 foreach my $key (keys %site_stats)
 {
-    $csv->combine(
-	(
-	 $key,
-	 $site_stats{$key}{total_cpu},
-	 $site_stats{$key}{hits},
-	));
-    print FILE $csv->string();
+	$csv->combine(
+	              (
+	               $key,
+	               $site_stats{$key}{total_cpu},
+	               $site_stats{$key}{hits},
+	               ));
+	print FILE $csv->string();
 }
 
 close FILE
-    or die "cpu-by-site.csv: $!";
+	or die "cpu-by-site.csv: $!";
