@@ -84,22 +84,21 @@ open(FILE, '>', 'cpu-by-url.csv')
   or die "cpu-by-url.csv: $!";
 
 # Print headers
-$csv->combine(
-    (
-     'url',
-     'total_cpu',
-     'hits'
-    ));
+$csv->combine(('URL',
+               'Hits',
+               'Total CPU Time (s)',
+               'CPU Time per Hit (s/hit)'
+               ));
 print FILE $csv->string();
 
 # Print data
 foreach my $key (keys %url_stats)
 {
-	$csv->combine(
-	              (
-	               $key,
-	               $url_stats{$key}{total_cpu},
-	               $url_stats{$key}{hits},
+	$csv->combine((
+                 $key,
+                 $url_stats{$key}{hits},
+                 $url_stats{$key}{total_cpu},
+                 $url_stats{$key}{total_cpu} / $url_stats{$key}{hits}
 	               ));
 	print FILE $csv->string();
 }
@@ -110,23 +109,22 @@ close FILE
 open(FILE, '>', 'cpu-by-site.csv')
 	or die "cpu-by-site.csv: $!";
 
-
 # Print headers
-$csv->combine(
-    (
-     'url',
-     'cpu',
-     'hits'
-    ));
+$csv->combine((
+               'URL',
+               'Hits',
+               'Total CPU Time (s)',
+               'CPU Time per Hit (s/hit)'
+               ));
 print FILE $csv->string();
 
 foreach my $key (keys %site_stats)
 {
-	$csv->combine(
-	              (
-	               $key,
+	$csv->combine((
+                 $key,
+                 $site_stats{$key}{hits},
 	               $site_stats{$key}{total_cpu},
-	               $site_stats{$key}{hits},
+                 $site_stats{$key}{total_cpu} / $site_stats{$key}{hits}
 	               ));
 	print FILE $csv->string();
 }
