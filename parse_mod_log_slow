@@ -1,19 +1,9 @@
 #!/usr/bin/perl
 #
-# Copyright (C) 2012-2014 Cyril Bouthors <cyril@boutho.rs>
-#
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program. If not, see <http://www.gnu.org/licenses/>.
-#
+# Copyright (C) Cyril Bouthors - All Rights Reserved
+# Unauthorized copying of this file, via any medium is strictly prohibited
+# Proprietary and confidential
+# Written by Cyril Bouthors <cyril@boutho.rs>, 2003-2020
 
 use constant;
 # Only use when debugging because it can lead to 50% performance loss
