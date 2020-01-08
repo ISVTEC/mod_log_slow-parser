@@ -15,8 +15,8 @@ use warnings qw(all);
 use sort     qw(stable _quicksort _mergesort);
 use Text::CSV;
 
-my ($usr_cpu, $sys_cpu, $host, $url);
-my (%url_stats, %site_stats);
+my ($usr_cpu, $sys_cpu, $host, $url, $url_no_param);
+my (%url_stats, %url_stats_no_param, %site_stats);
 
 my $blacklist = '\.(jpg|png|css|js|ico)$';
 
@@ -34,19 +34,31 @@ while (<>)
 		$host = $3;
 		$url = $5;
 
+    $url_no_param = $url;
+    $url_no_param =~ s/\?.*$//;
+
 		next if($url =~ /$blacklist/);
 
 		my $total_cpu = $usr_cpu + $sys_cpu;
 		next if ($total_cpu == 0);
 
-		if(!exists($url_stats{"$host$url"}))
-		{
-			$url_stats{"$host$url"} =
-			{
-				hits => 0,
-				cpu  => 0,
-			}
-		}
+    if(!exists($url_stats{"$host$url"}))
+    {
+      $url_stats{"$host$url"} =
+      {
+        hits => 0,
+        cpu  => 0,
+      }
+    }
+
+    if(!exists($url_stats_no_param{"$host$url_no_param"}))
+    {
+      $url_stats_no_param{"$host$url_no_param"} =
+      {
+        hits => 0,
+        cpu  => 0,
+      }
+    }
 
 		if(!exists($site_stats{$host}))
 		{
@@ -57,8 +69,11 @@ while (<>)
 			}
 		}
 
-		$url_stats{"$host$url"}{hits}++;
-		$url_stats{"$host$url"}{total_cpu} += $total_cpu;
+    $url_stats{"$host$url"}{hits}++;
+    $url_stats{"$host$url"}{total_cpu} += $total_cpu;
+
+    $url_stats_no_param{"$host$url_no_param"}{hits}++;
+    $url_stats_no_param{"$host$url_no_param"}{total_cpu} += $total_cpu;
 
 		$site_stats{$host}{hits}++;
 		$site_stats{$host}{total_cpu} += $total_cpu;
@@ -68,6 +83,7 @@ while (<>)
 my $csv = Text::CSV->new({eol => "\r\n"})
   or die "Cannot use CSV: ".Text::CSV->error_diag();
 
+# cpu-by-url.csv
 open(FILE, '>', 'cpu-by-url.csv')
   or die "cpu-by-url.csv: $!";
 
@@ -82,18 +98,46 @@ print FILE $csv->string();
 # Print data
 foreach my $key (sort { $url_stats{$b}{total_cpu} <=> $url_stats{$a}{total_cpu} } keys %url_stats)
 {
-	$csv->combine((
+  $csv->combine((
                  $key,
                  $url_stats{$key}{hits},
                  $url_stats{$key}{total_cpu},
                  $url_stats{$key}{total_cpu} / $url_stats{$key}{hits}
-	               ));
-	print FILE $csv->string();
+                 ));
+  print FILE $csv->string();
 }
 
 close FILE
-	or die "cpu-by-url.csv: $!";
+  or die "cpu-by-url.csv: $!";
 
+# cpu-by-url-no-param.csv
+open(FILE, '>', 'cpu-by-url-no-param.csv')
+  or die "cpu-by-url-no-param.csv: $!";
+
+# Print headers
+$csv->combine(('URL',
+               'Hits',
+               'Total CPU Time (sec)',
+               'CPU Time per Hit (sec/hit)'
+               ));
+print FILE $csv->string();
+
+# Print data
+foreach my $key (sort { $url_stats_no_param{$b}{total_cpu} <=> $url_stats_no_param{$a}{total_cpu} } keys %url_stats_no_param)
+{
+  $csv->combine((
+                 $key,
+                 $url_stats_no_param{$key}{hits},
+                 $url_stats_no_param{$key}{total_cpu},
+                 $url_stats_no_param{$key}{total_cpu} / $url_stats_no_param{$key}{hits}
+                 ));
+  print FILE $csv->string();
+}
+
+close FILE
+  or die "cpu-by-url-no-param.csv: $!";
+
+# cpu-by-site.csv
 open(FILE, '>', 'cpu-by-site.csv')
 	or die "cpu-by-site.csv: $!";
 
